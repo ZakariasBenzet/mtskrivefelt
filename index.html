@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aalborg Katedralskole – Lukket skrivefelt (SAFE)</title>
+  <style>
+    :root{
+      --brand:#6e1f34;
+      --brand-2:#7a223a;
+      --ink:#222; --bg:#f2f2f2; --white:#fff;
+
+      --ok:#1a7f37;
+      --saving:#b54708;
+      --off:#667085;
+      --err:#b42318;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;
+      background:var(--bg); color:var(--ink);
+    }
+
+    .header{
+      background:var(--white);
+      border-bottom:1px solid #e6e6e6;
+      padding:20px 26px;
+    }
+    .header h1{
+      font-size:26px; margin:0; letter-spacing:0.5px; color:var(--brand); font-weight:700;
+    }
+    .header small{ color:#667; font-size:14px; }
+
+    .tipbar{
+      background:rgba(110,31,52,.08);
+      color:#3b2d2f;
+      border-bottom:1px solid rgba(110,31,52,.2);
+      padding:10px 16px;
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .tipbar button{
+      appearance:none; border:1px solid rgba(0,0,0,.15);
+      background:#fff; padding:6px 10px;
+      border-radius:6px; cursor:pointer; font-weight:600;
+    }
+    .tipbar .kbd{
+      font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size:13px; border:1px solid #ccc; border-bottom-width:2px;
+      background:#fff; padding:1px 6px; border-radius:4px;
+    }
+
+    .page{
+      max-width:920px; margin:0 auto; background:#fff;
+      min-height:100vh; padding:20px 20px 110px;
+      border-left:1px solid #eee; border-right:1px solid #eee;
+    }
+
+    h2{margin:14px 0 8px}
+
+    .meta{
+      display:grid; grid-template-columns:120px 1fr;
+      gap:12px 10px; margin:16px 0 10px; align-items:center;
+    }
+    .meta input{
+      width:100%; padding:6px 8px;
+      border:1px solid #bbb; border-radius:4px; background:white;
+    }
+
+    .toolbar{
+      font-size:13px; color:#444;
+      margin:8px 0; display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+    }
+    .toolbar .spacer{flex:1}
+    .toolbar .btn{
+      appearance:none; border:1px solid #d0d0d0;
+      background:#fff; padding:6px 10px;
+      border-radius:6px; cursor:pointer; 
+    }
+    .toolbar .btn:hover{background:#f6f6f6}
+
+    .status{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; }
+    .led{ width:10px; height:10px; border-radius:50%; background:var(--off); }
+    .status.saved{color:var(--ok)} .status.saved .led{background:var(--ok)}
+    .status.saving{color:var(--saving)} .status.saving .led{background:var(--saving)}
+    .status.off{color:var(--off)} .status.off .led{background:var(--off)}
+    .status.error{color:var(--err)} .status.error .led{background:var(--err)}
+
+    .counts{
+      font-size:12px; color:#333;
+      background:#f8f8f8; border:1px solid #e2e2e2;
+      padding:4px 8px; border-radius:6px;
+    }
+
+    textarea{
+      width:100%; height:55vh; min-height:280px;
+      padding:12px 14px;
+      font:16px/1.6 Georgia,"Times New Roman",serif;
+      border:1px solid #bbb; border-radius:6px;
+      resize:vertical;
+    }
+
+    .printbar{
+      position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+      background:var(--brand); color:#fff;
+      padding:10px 14px; border-radius:999px;
+      display:flex; gap:10px; align-items:center;
+      box-shadow:0 3px 16px rgba(0,0,0,.18);
+    }
+    .printbar .btn{
+      background:#fff; border:0; color:var(--brand);
+      padding:8px 12px; border-radius:8px; font-weight:700; cursor:pointer;
+    }
+    .hint{font-size:12px; opacity:.9}
+
+    #warn{font-size:12px; color:#b54708; display:none; margin-top:6px}
+
+    #printView{
+      display:none;
+      padding:12px 14px;
+      border:1px solid #bbb;
+      border-radius:6px;
+      background:#fff;
+      font:16px/1.6 Georgia,"Times New Roman",serif;
+      white-space:pre-wrap;
+      word-wrap:break-word;
+    }
+
+    @media print{
+      textarea#skriv{ display:none !important; }
+      #printView{ display:block !important; }
+      .printbar, .tipbar{display:none !important;}
+      body{ background:#fff; }
+      .page{ border:0; max-width:none; padding:0; }
+      #printView{ hyphens:auto; }
+    }
+    @media screen {
+      textarea#skriv { display:block !important; }
+      #printView     { display:none  !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1>Aalborg Katedralskole</h1>
+        <small>Lukket skrivefelt (SAFE)</small>
+  </div>
+
+  <div id="tipbar" class="tipbar">
+    <strong>Tip:</strong>
+    <span id="tipText">Fuldskærm → <span class="kbd">F11</span> (Windows/Chromebook) · <span class="kbd">Ctrl + ⌘ + F</span> (Mac)</span>
+    <span class="spacer"></span>
+    <button id="hideTips">Skjul tip</button>
+  </div>
+
+  <div class="page">
+    <h2>Instruktion</h2>
+    <ol>
+      <li>Udfyld <b>Navn</b> og <b>Klasse/Hold</b>.</li>
+      <li>Skriv din tekst i skrivefeltet</li>
+      <li>Klik <b>Dan PDF</b> nederst.</li>
+    </ol>
+
+    <div class="meta">
+      <label for="navn">Navn:</label><input id="navn" autocomplete="name">
+      <label for="klasse">Klasse/Hold:</label><input id="klasse" autocomplete="organization">
+    </div>
+
+    <div class="toolbar">
+      <span>Stave-/grammatikkontrol deaktiveret. Kopi/indsæt blokeres.</span>
+
+      <span id="counts" class="counts">Ord: 0 · Tegn: 0</span>
+
+      <span class="spacer"></span>
+
+      <span id="saveStatus" class="status saving"><span class="led"></span><span id="saveText">Nulstillet…</span></span>
+
+      <button id="forceSave" class="btn">Gem nu</button>
+      <button id="reset" class="btn">Nulstil</button>
+    </div>
+
+    <!-- ✅ Hjælpemidler ON -->
+    <textarea
+      id="skriv"
+      spellcheck="true"
+      autocomplete="on"
+      autocorrect="on"
+      autocapitalize="sentences"
+      placeholder="Skriv din besvarelse her ..."
+    ></textarea>
+
+    <div id="printView" aria-hidden="true"></div>
+    <div id="warn">Autosave er ikke tilgængelig (lager blokeret). Gem ofte som PDF.</div>
+  </div>
+
+  <div class="printbar">
+    <button id="print" class="btn">Dan PDF</button>
+    <span class="hint">Gem via “Print til PDF”</span>
+  </div>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const ta = $("#skriv"), navn = $("#navn"), klasse = $("#klasse");
+    const saveStatus = $("#saveStatus"), saveText = $("#saveText"), warn=$("#warn");
+    const countsEl = $("#counts");
+    const printView = document.getElementById("printView");
+
+    /* Tipbar memory */
+    try {
+      const TIP_KEY='ak_demo_tip_hidden_v1';
+      if(localStorage.getItem(TIP_KEY)==='1') $("#tipbar").style.display='none';
+      $("#hideTips").onclick=()=>{localStorage.setItem(TIP_KEY,'1');$("#tipbar").style.display='none'};
+    } catch {}
+
+    /* Word / char count */
+    function updateCounts(){
+      const t = ta.value||"";
+      const words = (t.trim().match(/[^\s]+/g)||[]).length;
+      const chars = Array.from(t).length;
+      countsEl.textContent = `Ord: ${words} · Tegn: ${chars}`;
+    }
+    ta.addEventListener('input', updateCounts);
+
+    /* PrintView sync */
+    function updatePrintView(){ printView.textContent = ta.value || ""; }
+    ta.addEventListener('input', updatePrintView);
+
+    /* Print */
+    $("#print").onclick = async () => {
+      updatePrintView();
+      const old=document.title;
+      document.title=((navn.value||'Besvarelse')+(klasse.value?` – ${klasse.value}`:''))+' (PDF)';
+      document.activeElement?.blur();
+      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+      if(document.fonts) try{await document.fonts.ready;}catch{}
+      window.print();
+      setTimeout(()=>document.title=old,400);
+    };
+
+    function beforePrint(){ updatePrintView(); }
+    function afterPrint(){}
+    if ('onbeforeprint' in window) {
+      window.addEventListener('beforeprint', beforePrint);
+      window.addEventListener('afterprint', afterPrint);
+    } else if (window.matchMedia) {
+      const mql = window.matchMedia('print');
+      mql.addListener((mq) => mq.matches ? beforePrint() : afterPrint());
+    }
+
+    /* ✅ OBS: Ingen copy/cut/paste blokering her */
+
+    /* Autosave */
+    const KEY='ak_demo_autosave_v1';
+    function storageOK(){try{localStorage.setItem('_t','1');localStorage.removeItem('_t');return true;}catch{return false;}}
+    const can = storageOK();
+
+    function setStatus(cls,msg){saveStatus.className='status '+cls; saveText.textContent=msg;}
+
+    if(!can){
+      warn.style.display='block';
+      setStatus('off','Autosave ikke tilgængelig');
+    }else{
+      setStatus('saving','Initialiserer…');
+    }
+
+    function save(){
+      if(!can) return;
+      try{
+        localStorage.setItem(KEY, JSON.stringify({
+          navn:navn.value||'', klasse:klasse.value||'', tekst:ta.value||''
+        }));
+        const t=new Date(),z=n=>String(n).padStart(2,'0');
+        setStatus('saved',`Gemt kl. ${z(t.getHours())}:${z(t.getMinutes())}`);
+      }catch(e){
+        setStatus('error','Autosave fejlede');
+      }
+    }
+
+    function load(){
+      if(!can) return;
+      try{
+        const d=JSON.parse(localStorage.getItem(KEY)||'null');
+        if(d){navn.value=d.navn||''; klasse.value=d.klasse||''; ta.value=d.tekst||'';}
+        setStatus('saved','Gemt indlæst');
+        updateCounts();
+      }catch{}
+    }
+
+    let tm=null;
+    function queue(){setStatus('saving','Gemmer…');clearTimeout(tm);tm=setTimeout(save,400);}
+    [navn,klasse,ta].forEach(el=>el.addEventListener('input',queue));
+
+    $("#forceSave").onclick=save;
+
+    $("#reset").onclick=()=>{
+      if(confirm('Nulstil alt?')){
+        navn.value=''; klasse.value=''; ta.value='';
+        if(can) localStorage.removeItem(KEY);
+        updateCounts();
+        updatePrintView();
+        setStatus('saving','Nulstillet…');
+      }
+    };
+
+    window.addEventListener('beforeunload',save);
+    load();
+    updateCounts();
+    updatePrintView();
+  </script>
+</body>
+</html>
