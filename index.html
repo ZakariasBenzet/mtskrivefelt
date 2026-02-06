@@ -66,6 +66,34 @@
     <span class="hint">Gem via “Print til PDF”</span>
   </div>
 
+<!-- Disclaimer Modal (pulls content from readme.md) -->
+<div id="disclaimerOverlay" class="disclaimer-overlay" aria-hidden="true">
+  <div class="disclaimer-modal" role="dialog" aria-modal="true" aria-labelledby="disclaimerTitle">
+    <h2 id="disclaimerTitle">Important Notice</h2>
+
+    <p class="disclaimer-sub">
+      Please read this notice before continuing.
+    </p>
+
+    <div id="disclaimerContent" class="disclaimer-content">
+      <p>Loading notice…</p>
+    </div>
+
+    <div class="disclaimer-actions">
+      <button id="disclaimerAcceptBtn" class="disclaimer-btn">
+        I understand and agree to use this website at my own risk
+      </button>
+    </div>
+
+    <p class="disclaimer-footnote">
+      This notice is shown on every visit.
+    </p>
+  </div>
+</div>
+<script src="disclaimerbox.js"></script>
+
+
+
 <script src="script.js"></script>
 </body>
 </html>
