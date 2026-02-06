@@ -1,0 +1,134 @@
+  :root{
+      --brand:#6e1f34;
+      --brand-2:#7a223a;
+      --ink:#222; --bg:#f2f2f2; --white:#fff;
+
+      --ok:#1a7f37;
+      --saving:#b54708;
+      --off:#667085;
+      --err:#b42318;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif;
+      background:var(--bg); color:var(--ink);
+    }
+
+    .header{
+      background:var(--white);
+      border-bottom:1px solid #e6e6e6;
+      padding:20px 26px;
+    }
+    .header h1{
+      font-size:26px; margin:0; letter-spacing:0.5px; color:var(--brand); font-weight:700;
+    }
+    .header small{ color:#667; font-size:14px; }
+
+    .tipbar{
+      background:rgba(110,31,52,.08);
+      color:#3b2d2f;
+      border-bottom:1px solid rgba(110,31,52,.2);
+      padding:10px 16px;
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .tipbar button{
+      appearance:none; border:1px solid rgba(0,0,0,.15);
+      background:#fff; padding:6px 10px;
+      border-radius:6px; cursor:pointer; font-weight:600;
+    }
+    .tipbar .kbd{
+      font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size:13px; border:1px solid #ccc; border-bottom-width:2px;
+      background:#fff; padding:1px 6px; border-radius:4px;
+    }
+
+    .page{
+      max-width:920px; margin:0 auto; background:#fff;
+      min-height:100vh; padding:20px 20px 110px;
+      border-left:1px solid #eee; border-right:1px solid #eee;
+    }
+
+    h2{margin:14px 0 8px}
+
+    .meta{
+      display:grid; grid-template-columns:120px 1fr;
+      gap:12px 10px; margin:16px 0 10px; align-items:center;
+    }
+    .meta input{
+      width:100%; padding:6px 8px;
+      border:1px solid #bbb; border-radius:4px; background:white;
+    }
+
+    .toolbar{
+      font-size:13px; color:#444;
+      margin:8px 0; display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+    }
+    .toolbar .spacer{flex:1}
+    .toolbar .btn{
+      appearance:none; border:1px solid #d0d0d0;
+      background:#fff; padding:6px 10px;
+      border-radius:6px; cursor:pointer; 
+    }
+    .toolbar .btn:hover{background:#f6f6f6}
+
+    .status{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; }
+    .led{ width:10px; height:10px; border-radius:50%; background:var(--off); }
+    .status.saved{color:var(--ok)} .status.saved .led{background:var(--ok)}
+    .status.saving{color:var(--saving)} .status.saving .led{background:var(--saving)}
+    .status.off{color:var(--off)} .status.off .led{background:var(--off)}
+    .status.error{color:var(--err)} .status.error .led{background:var(--err)}
+
+    .counts{
+      font-size:12px; color:#333;
+      background:#f8f8f8; border:1px solid #e2e2e2;
+      padding:4px 8px; border-radius:6px;
+    }
+
+    textarea{
+      width:100%; height:55vh; min-height:280px;
+      padding:12px 14px;
+      font:16px/1.6 Georgia,"Times New Roman",serif;
+      border:1px solid #bbb; border-radius:6px;
+      resize:vertical;
+    }
+
+    .printbar{
+      position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+      background:var(--brand); color:#fff;
+      padding:10px 14px; border-radius:999px;
+      display:flex; gap:10px; align-items:center;
+      box-shadow:0 3px 16px rgba(0,0,0,.18);
+    }
+    .printbar .btn{
+      background:#fff; border:0; color:var(--brand);
+      padding:8px 12px; border-radius:8px; font-weight:700; cursor:pointer;
+    }
+    .hint{font-size:12px; opacity:.9}
+
+    #warn{font-size:12px; color:#b54708; display:none; margin-top:6px}
+
+    #printView{
+      display:none;
+      padding:12px 14px;
+      border:1px solid #bbb;
+      border-radius:6px;
+      background:#fff;
+      font:16px/1.6 Georgia,"Times New Roman",serif;
+      white-space:pre-wrap;
+      word-wrap:break-word;
+    }
+
+    @media print{
+      textarea#skriv{ display:none !important; }
+      #printView{ display:block !important; }
+      .printbar, .tipbar{display:none !important;}
+      body{ background:#fff; }
+      .page{ border:0; max-width:none; padding:0; }
+      #printView{ hyphens:auto; }
+    }
+    @media screen {
+      textarea#skriv { display:block !important; }
+      #printView     { display:none  !important; }
+    }
